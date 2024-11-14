@@ -9,6 +9,10 @@ Route::get('/', function () {
 Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('dashboard', [\App\Http\Controllers\PageController::class, 'dashboard'])->name('dashboard');
     Route::get('logout', [\App\Http\Controllers\AuthController::class, 'revokeToken'])->name('logout');
+
+//  Project
+    Route::get('project/{id}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
+    Route::post('project', [\App\Http\Controllers\ProjectController::class, 'store'])->name('store.project');
 });
 
 
