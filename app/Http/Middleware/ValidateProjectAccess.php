@@ -18,8 +18,7 @@ class ValidateProjectAccess
     public function handle(Request $request, Closure $next): Response
     {
         $project = Project::where('slug', '=', $request->id)->first();
-        $member = ProjectMember::where('project_id', '=', $project->id)->first();
-        if ($member->user_id == auth()->guard('api')->user()->id) {
+        if (ProjectMember::where('project_id', '=', $project->id)->where('user_id', '=', auth()->guard('api')->user()->id)->exists()) {
             return $next($request);
         }
         abort(404);
