@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Random\RandomException;
 
 class UserController extends Controller
 {
@@ -26,9 +28,11 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws RandomException
      */
     public function store(Request $request)
     {
+        $auth = new AuthController();
         //
         $request->validate([
            'name' => 'string|required',
@@ -49,7 +53,7 @@ class UserController extends Controller
         }
 
         User::create($request->all());
-        return redirect()->route('login')->with('success', 'Create user success!');
+        return $auth->verifyEmail($request, $request->email);
     }
 
     /**
@@ -74,6 +78,38 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            'name' => 'string|required',
+            'email' => 'required|string',
+        ]);
+
+        $user = auth()->guard('api')->user();
+
+        $img = $user->profile_img;
+
+        if ($request->hasFile('img')) {
+            if ($img) {
+                Storage::delete('profile/'.$img);
+            }
+            $file = $request->file('img');
+            $filename = $this->generateRandomString();
+            $extension = $file->getClientOriginalExtension();
+            $img = $filename . "." . $extension;
+            $allowed  = ['jpg', 'jpeg', 'png', 'jfif'];
+
+            if (in_array($extension, $allowed)) {
+                Storage::disk('public')->putFileAs('profile', $file, $img);
+                $user->profile_img = $img;
+            } else {
+                return redirect()->route('register')->with('error', 'We not support that image format !');
+            }
+        }
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->save();
+
+        return redirect()->route('dashboard');
     }
 
     /**
@@ -82,5 +118,10 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    function generateRandomString($length = 30): string
+    {
+        return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
     }
 }

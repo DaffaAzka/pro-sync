@@ -17,6 +17,7 @@ class PageController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
+                'profile' => $user->profile_img ?? 'none'
             ]
         ]);
 

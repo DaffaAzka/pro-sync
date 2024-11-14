@@ -21,9 +21,8 @@ class AuthController extends Controller
     /**
      * @throws RandomException
      */
-    function verifyEmail(Request $request)
-    {
-//        dd($request->ip());
+
+    function login(Request $request) {
         $request->validate([
             'email' => 'required|string',
             'password' => 'required|string'
@@ -31,40 +30,59 @@ class AuthController extends Controller
 
         $user = User::where("email", "=", $request->email)->first();
         if ($user && Hash::check($request->password, $user->password)) {
-            $randomNumber = random_int(100000, 999999);
-            $authCode = $randomNumber;
 
-            Cache::put('verify_code_' . $request->ip(), $authCode, now()->addMinutes(3));
-            Mail::to($user->email)->send(new VerifyMail($authCode));
+            if (!$user->security) {
+                $token = $user->createToken('login')->accessToken;
+                Cookie::queue('Authorization', $token, 43200);
+                return redirect()->route('dashboard');
+            } else {
+                return $this->verifyEmail($request, $user->email);
+            }
 
-            session(['email' => $user->email]);
-            Session::forget('error');
-
-            return view('verify');
         }
-        return redirect()->route('login')->with('error', 'It looks like the code you entered is incorrect!');
+
+        return redirect()->route('login')->with('error', 'It looks like some field is incorrect!');
+    }
+
+    /**
+     * @throws RandomException
+     */
+    function verifyEmail(Request $request, String $email): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+    {
+        $randomNumber = random_int(100000, 999999);
+        $authCode = $randomNumber;
+
+        Cache::put('verify_code_' . $request->ip(), $authCode, now()->addMinutes(3));
+        Mail::to($email)->send(new VerifyMail($authCode));
+
+        session(['email' => $email]);
+        Session::forget('error');
+
+        return view('verify');
     }
 
     /**
      * @throws ConnectionException
      */
-    function getTokens(Request $request)
+    function getTokens(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         $code = $request->code;
         $user = User::where('email', '=', $request->email)->first();
         if ($code == Cache::get('verify_code_' . $request->ip())) {
+
             Cache::forget('verify_code_' . $request->ip());
             Session::flush();
             $token = $user->createToken('login')->accessToken;
             Cookie::queue('Authorization', $token, 43200);
             return redirect()->route('dashboard');
+
         }
 
         session(['error' => 'Incorrect verification code. Try again!']);
         return view('verify');
     }
 
-    function revokeToken(Request $request)
+    function revokeToken(Request $request): \Illuminate\Http\RedirectResponse
     {
         Cookie::queue(Cookie::forget('Authorization'));
         return redirect()->route('dashboard');

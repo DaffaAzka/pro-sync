@@ -3,6 +3,7 @@
     <x-navigation>
         <x-slot name="name">{{ $user['name'] }}</x-slot>
         <x-slot name="email">{{ $user['email'] }}</x-slot>
+        <x-slot name="profile">{{ $user['profile'] }}</x-slot>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
             <div class="p-6 bg-gradient-to-r from-purple-500 to-indigo-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
