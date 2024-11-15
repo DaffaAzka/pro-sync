@@ -23,6 +23,16 @@ class User extends Authenticatable
         return $this->hasMany(ProjectMember::class, 'user_id', 'id');
     }
 
+    public function partners() {
+        return $this->belongsToMany(User::class, 'partners', 'user_id', 'partner_id')
+            ->withPivot('status') ->withTimestamps();
+    }
+
+    public function partnerOf() {
+        return $this->belongsToMany(User::class, 'partners', 'partner_id', 'user_id')
+            ->withPivot('status') ->withTimestamps();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

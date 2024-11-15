@@ -6,14 +6,33 @@
         <x-slot name="profile">{{ $user['profile'] }}</x-slot>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-            <div class="p-6 bg-gradient-to-r from-purple-500 to-indigo-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">Pengembagan ide bisnis CompanyX</h5>
-                <p class="mb-3 font-normal text-gray-100 line-clamp-2">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-                <a href="#" class="inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
-                    Go to project
-                    <box-icon name='right-arrow-alt' class="ms-2"></box-icon>
-                </a>
-            </div>
+            @if($project)
+                <div class="p-6 bg-gradient-to-r from-purple-500 to-indigo-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">{{ $project['name'] }}</h5>
+                    <p class="mb-3 font-normal text-gray-100 line-clamp-2">Your project deadline is approaching on {{ $project['end_date'] }}. Make sure all tasks are completed and issues are resolved promptly.</p>
+
+                    <div class="flex items-center space-x-2">
+                        <a href="#" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                            Go to project
+                            <box-icon name="right-arrow-alt" class="ml-2"></box-icon>
+                        </a>
+
+                        <div class="flex items-center -space-x-4 rtl:space-x-reverse">
+                            @for ($i = 0; $i < count($avatars); $i++)
+                                @if($i < 2)
+                                    <img class="w-8 h-8 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/' . $avatars[$i]) }}" alt="member picture">
+                                @endif
+                            @endfor
+
+                            @if(count($avatars) > 2)
+                                <a class="flex items-center justify-center w-8 h-8 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800" href="#">{{ count($avatars) - 2 }}</a>
+                            @endif
+                        </div>
+                    </div>
+
+
+                </div>
+            @endif
 
             <div class="p-6 bg-gradient-to-r from-red-500 to-pink-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">Initiated New Project</h5>
