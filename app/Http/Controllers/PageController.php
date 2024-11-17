@@ -44,11 +44,15 @@ class PageController extends Controller
             $query->where('user_id', "=", $user->id); }
         )->where('status', '=', 'ongoing')->orderBy('end_date')->first();
 
-        $avatars = User::whereHas('projectMembers', function ($query) use ($project) {
-            $query->where('project_id', $project->id);
-        })->get()->map(function ($user) {
-            return $user->profile_img ?? 'guest.jpg';
-        })->toArray();
+        $avatars = null;
+
+        if ($project) {
+            $avatars = User::whereHas('projectMembers', function ($query) use ($project) {
+                $query->where('project_id', $project->id);
+            })->get()->map(function ($user) {
+                return $user->profile_img ?? 'guest.jpg';
+            })->toArray();
+        }
 
         return view('dashboard', [
             'user' => [

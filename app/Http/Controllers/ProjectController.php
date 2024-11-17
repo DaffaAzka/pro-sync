@@ -63,7 +63,7 @@ class ProjectController extends Controller
         return view('project.preview', ['user' => [
             'name' => $user->name,
             'email' => $user->email,
-            'profile' => $user->profile_img ?? 'none'
+            'profile' => $user->profile_img ?? 'guest.jpg'
         ]]);
     }
 

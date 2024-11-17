@@ -52,6 +52,7 @@ class UserController extends Controller
             return redirect()->route('register')->with('error', 'Email already exist!');
         }
 
+        $request['username'] = $this->generateUsername($request['name']);
         User::create($request->all());
         return $auth->verifyEmail($request, $request->email);
     }
@@ -123,5 +124,12 @@ class UserController extends Controller
     function generateRandomString($length = 30): string
     {
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
+    }
+
+    function generateUsername($name): string
+    {
+        $nameWithoutSpaces = str_replace(' ', '', $name);
+        $randomNumber = rand(10, 99);
+        return $nameWithoutSpaces . $randomNumber;
     }
 }

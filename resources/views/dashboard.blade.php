@@ -12,7 +12,7 @@
                     <p class="mb-3 font-normal text-gray-100 line-clamp-2">Your project deadline is approaching on {{ $project['end_date'] }}. Make sure all tasks are completed and issues are resolved promptly.</p>
 
                     <div class="flex items-center space-x-2">
-                        <a href="#" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                        <a href="{{ route('show.project', ['id' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
                             Go to project
                             <box-icon name="right-arrow-alt" class="ml-2"></box-icon>
                         </a>

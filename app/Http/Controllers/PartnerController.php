@@ -16,6 +16,11 @@ class PartnerController extends Controller
                 'email' => $user->email,
                 'profile' => $user->profile_img ?? 'guest.jpg'
             ],
+            'page' => [
+                'partners' => false,
+                'connect' => true,
+                'search' => false
+            ]
         ]);
     }
 }
