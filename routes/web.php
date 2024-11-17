@@ -10,9 +10,14 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('dashboard', [\App\Http\Controllers\PageController::class, 'dashboard'])->name('dashboard');
     Route::get('logout', [\App\Http\Controllers\AuthController::class, 'revokeToken'])->name('logout');
     Route::get('partners', [\App\Http\Controllers\PartnerController::class, 'show'])->name('partners.show');
+
 //  Project
     Route::get('project/{id}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
     Route::post('project', [\App\Http\Controllers\ProjectController::class, 'store'])->name('store.project');
+
+//  Partners
+    Route::post('find-partners', [\App\Http\Controllers\PartnerController::class, 'findUser'])->name('find.partners');
+    Route::get('add-partners/{username}', [\App\Http\Controllers\PartnerController::class, 'store'])->name('store.partner');
 });
 
 
