@@ -19,60 +19,44 @@ class PartnerController extends Controller
         $request['partner_id'] = $partnerId;
         $request['status'] = "pending";
 
-        if (Partner::where('user_id', $user->id)->where('partner_id', $partnerId)->exists()) {
+        if (!Partner::where('user_id', $user->id)->where('partner_id', $partnerId)->exists()) {
             $success = [
                 'message' => "Successfully sending partner request to ",
                 'username' => $username
             ];
 
             Partner::create($request->all());
-        } else {
-            $fail = [
-                'message' => "Sending request failed to " . $username . " because you're already sent it.",
-            ];
         }
 
-//        dd("Successfully sending partner request to " . $username);
-        return view('partners.lists', [
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-                'profile' => $user->profile_img ?? 'guest.jpg'
-            ],
-            'page' => [
-                'partners' => true,
-                'connect' => false,
-            ],
-            'partners' => [],
-            'pending' => $this->userRequest($user->id),
-            'success' => $success,
-        ]);
+        return redirect()->to(route('partners.show'))->with('success', $success);
     }
 
     function show(Request $request)
     {
         $user =  auth()->guard('api')->user();
-        $success = null;
+
         return view('partners.lists', [
             'user' => [
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'profile' => $user->profile_img ?? 'guest.jpg'
             ],
             'page' => [
                 'partners' => true,
                 'connect' => false,
+                'pending' => false,
+
             ],
-            'partners' => [],
+            'partners' => $this->getMyPartners(),
+            'connects' => [],
             'pending' => $this->userRequest($user->id),
-            'success' => $success,
         ]);
     }
 
     function findUser(Request $request)
     {
         $user =  auth()->guard('api')->user();
-        $success = null;
 
         if ($request['usage'] == 'connect') {
             /**
@@ -86,27 +70,33 @@ class PartnerController extends Controller
             $page = [
                 'partners' => false,
                 'connect' => true,
+                'pending' => false,
             ];
+
+            $partner = $this->getMyPartners();
         } else {
-            $usersToConnect = User::where('username', 'like', '%' . $request['username'] . '%')
+            $partner = User::where('username', 'like', '%' . $request['username'] . '%')
                 ->whereIn('id', Partner::where('user_id', $user->id)->pluck('partner_id')->toArray())
                 ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
             $page = [
                 'partners' => true,
                 'connect' => false,
+                'pending' => false,
             ];
+            $usersToConnect = [];
         }
 
         return view('partners.lists', [
             'user' => [
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'profile' => $user->profile_img ?? 'guest.jpg'
             ],
             'page' => $page,
-            'partners' => $usersToConnect,
+            'partners' => $partner,
+            'connects' => $usersToConnect,
             'pending' => $this->userRequest($user->id),
-            'success' => $success,
         ]);
     }
 
@@ -117,6 +107,12 @@ class PartnerController extends Controller
          */
         return User::whereIn('id', Partner::where('user_id', $id)->where('status', 'pending')->pluck('partner_id'))
                     ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
+    }
+
+    function getMyPartners()
+    {
+        $user =  auth()->guard('api')->user();
+        return $user->partners()->wherePivot('status', "partner")->get();
     }
 
     function destroy($id)
