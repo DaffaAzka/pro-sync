@@ -25,12 +25,16 @@ class User extends Authenticatable
 
     public function partners() {
         return $this->belongsToMany(User::class, 'partners', 'user_id', 'partner_id')
-            ->withPivot('status') ->withTimestamps();
+            ->withPivot('status')
+            ->select('users.id', 'users.name', 'users.username', 'users.profile_img')
+            ->wherePivot('status', 'partner');
     }
 
     public function partnerOf() {
         return $this->belongsToMany(User::class, 'partners', 'partner_id', 'user_id')
-            ->withPivot('status') ->withTimestamps();
+            ->withPivot('status')
+            ->select('users.id', 'users.name', 'users.username', 'users.profile_img')
+            ->wherePivot('status', 'partner');
     }
 
     /**

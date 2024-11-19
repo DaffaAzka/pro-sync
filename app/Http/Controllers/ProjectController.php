@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner;
 use App\Models\Project;
 use App\Models\ProjectMember;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -58,13 +60,22 @@ class ProjectController extends Controller
     {
         //
         $user = auth()->guard('api')->user();
-        $project = Project::where('slug', '=', $id)->first();
+        $partners = $user->partners;
 
-        return view('project.preview', ['user' => [
-            'name' => $user->name,
-            'email' => $user->email,
-            'profile' => $user->profile_img ?? 'guest.jpg'
-        ]]);
+        $project = Project::where('slug', '=', $id)->first();
+        $members = ProjectMember::where('project_id', '=', $project->id)->get();
+
+        dd($partners);
+
+        return view('project.preview', [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile' => $user->profile_img ?? 'guest.jpg'
+            ],
+            'project' => $project,
+            'members_count' => $members->count(),
+        ]);
     }
 
     /**
