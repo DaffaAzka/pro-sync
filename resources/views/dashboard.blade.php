@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
             @if($project)
-                <div class="p-6 bg-gradient-to-r from-purple-500 to-indigo-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <div class="md:span p-6 bg-gradient-to-r from-purple-500 to-indigo-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">{{ $project['name'] }}</h5>
                     <p class="mb-3 font-normal text-gray-100 line-clamp-2">Your project deadline is approaching on {{ $project['end_date'] }}. Make sure all tasks are completed and issues are resolved promptly.</p>
 

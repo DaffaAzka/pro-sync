@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="{{ asset('storage/dummy.ico') }}" type="image/x-icon">
     <title>ProSync - Project Management</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 </head>
 <body class="bg-gray-50">
