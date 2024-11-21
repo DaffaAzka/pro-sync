@@ -126,7 +126,7 @@
                                 <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                     <div class="flex items-center gap-3 md:gap-6">
                                         <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/guest.jpg')}}" alt="member picture">
-                                        <h3 class="text-base md:text-lg font-normal">{{ $partner->username }}</h3>
+                                        <h3 class="text-base md:text-lg font-normal">{{ $partner->name }}</h3>
                                         <div class="ml-auto">
 
                                             <button id="dropdownMenuIcon-search-{{ $partner->username }}" data-dropdown-toggle="dropdownDots-search-{{ $partner->username }}" class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none dark:focus:ring-blue-800" type="button">

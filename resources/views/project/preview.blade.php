@@ -127,17 +127,17 @@
                             </label>
                             <div class="overflow-y-auto max-h-[40vh]">
                                 <div class="grid gap-3">
-                                    @for($i = 0; $i < 10; $i++)
+                                    @foreach($partners as $partner)
                                         <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center gap-3 md:gap-6">
                                                 <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/guest.jpg')}}" alt="member picture">
-                                                {{--                                    <h3 class="text-base md:text-lg font-normal">{{ $partner->username }}</h3>--}}
-                                                <h3 class="text-base md:text-lg font-normal">Destrivers</h3>
+                                                <h3 class="text-base md:text-lg font-normal">{{ "@" . $partner->username }}</h3>
+{{--                                                <h3 class="text-base md:text-lg font-normal">Destrivers</h3>--}}
                                                 <div class="ml-auto">
-                                                    <form action="" method="post">
+                                                    <form action="#" method="get">
                                                         @csrf
                                                         <input type="hidden" name="partner-id" value="">
-                                                        <button type="submit" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+                                                        <button type="button" class="invite-button focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
                                                             Invite
                                                         </button>
                                                     </form>
@@ -145,7 +145,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @endfor
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -166,6 +166,18 @@
                 const $successIcon = document.getElementById('success-icon');
                 const $defaultTooltipMessage = document.getElementById('default-tooltip-message');
                 const $successTooltipMessage = document.getElementById('success-tooltip-message');
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.invite-button').forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            console.log('masuk');
+                            this.disabled = true; this.textContent = 'Invited';
+                            this.classList.remove('bg-purple-700', 'hover:bg-purple-800', 'dark:bg-purple-600', 'dark:hover:bg-purple-700');
+                            this.classList.add('bg-gray-500', 'dark:bg-gray-400'); t
+                            this.closest('form').submit();
+                        });
+                    });
+                });
 
                 // Event listener for clipboard button click
                 clipboardButton.addEventListener('click', () => {

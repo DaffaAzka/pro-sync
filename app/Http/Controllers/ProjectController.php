@@ -65,7 +65,7 @@ class ProjectController extends Controller
         $project = Project::where('slug', '=', $id)->first();
         $members = ProjectMember::where('project_id', '=', $project->id)->get();
 
-        dd($partners);
+//        dd($partners);
 
         return view('project.preview', [
             'user' => [
@@ -75,6 +75,7 @@ class ProjectController extends Controller
             ],
             'project' => $project,
             'members_count' => $members->count(),
+            'partners' => $partners,
         ]);
     }
 
