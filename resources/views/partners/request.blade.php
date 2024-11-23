@@ -60,6 +60,37 @@
                                 </div>
                             @endif
 
+                                @foreach($projects as $project)
+                                    <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center gap-3 md:gap-6">
+                                            <h3 class="text-base md:text-lg font-normal">{{ $project->name }}</h3>
+                                            <div class="ml-auto">
+
+                                                <button id="dropdownMenuIcon-search-{{ $project->slug }}" data-dropdown-toggle="dropdownDots-search-{{ $project->slug }}" class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-gray-600 rounded-lg hover:bg-gray-700 focus:ring-4 focus:ring-gray-400 focus:outline-none focus:ring-offset-0 dark:focus:ring-gray-800" type="button">
+                                                    <svg class="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                                        <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                                    </svg>
+                                                </button>
+
+
+                                                <!-- Dropdown menu -->
+                                                <div id="dropdownDots-search-{{ $project->slug }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIcon-search-{{ $project->slug }}">
+                                                        <li>
+                                                            <a href="{{ route('accept.project', ['slug' => $project->slug]) }}" class="block px-4 py-2 text-green-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-green-500">Accept</a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a href="#" class="block px-4 py-2 text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-500">Decline</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
                         </div>
 
                     </div>

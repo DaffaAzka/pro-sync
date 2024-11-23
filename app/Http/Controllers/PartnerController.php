@@ -35,6 +35,9 @@ class PartnerController extends Controller
     {
         $user =  auth()->guard('api')->user();
 
+//        $dump = User::select('username')->get();
+//        dd($dump);
+
         return view('partners.lists', [
             'user' => [
                 'name' => $user->name,
@@ -75,8 +78,10 @@ class PartnerController extends Controller
 
             $partner = $this->getMyPartners();
         } else {
+//            dd($request['username']);
             $partner = User::where('username', 'like', '%' . $request['username'] . '%')
                 ->whereIn('id', Partner::where('user_id', $user->id)->pluck('partner_id')->toArray())
+//                ->whereIn('id', Partner::where('user_id', $user->id)->select('partner_id')->get())
                 ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
             $page = [
                 'partners' => true,

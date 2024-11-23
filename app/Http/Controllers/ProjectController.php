@@ -60,10 +60,19 @@ class ProjectController extends Controller
     {
         //
         $user = auth()->guard('api')->user();
-        $partners = $user->partners;
 
         $project = Project::where('slug', '=', $id)->first();
         $members = ProjectMember::where('project_id', '=', $project->id)->get();
+
+//        $partners = $user->partners()->whereNotIn('partners.partner_id',
+//            \App\Models\Request::where('project_id', '=', $project->id)->pluck('receiver_id'))->get();
+
+        $excludedPartnerIds = ProjectMember::where('project_id', $project->id)->pluck('user_id')
+            ->merge(\App\Models\Request::where('project_id', $project->id)->pluck('receiver_id'));
+
+        $partners = $user->partners() ->whereNotIn('partners.partner_id', $excludedPartnerIds)->get();
+//        dd($partners);
+
 
 //        dd($partners);
 
@@ -71,7 +80,9 @@ class ProjectController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
-                'profile' => $user->profile_img ?? 'guest.jpg'
+                'profile' => $user->profile_img ?? 'guest.jpg',
+                'role' => ProjectMember::where('project_id', '=', $project->id)->where('user_id', $user->id)
+                    ->pluck('role')->first(),
             ],
             'project' => $project,
             'members_count' => $members->count(),

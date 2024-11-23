@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Partner;
+use App\Models\Project;
+use App\Models\ProjectMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -18,6 +20,8 @@ class RequestController extends Controller
         $partners = User::whereIn('id', Partner::where('partner_id', $user->id)->where('status', 'pending')->pluck('user_id'))
             ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
 //        $partners = Partner::where('partner_id', $user->id)->where('status', 'pending')->get();
+        $projects = Project::whereIn('id', \App\Models\Request::where('receiver_id', $user->id)
+            ->where('status', 'pending')->pluck('project_id'))->get();
 
 //        dd($partners);
 
@@ -28,7 +32,8 @@ class RequestController extends Controller
                 'email' => $user->email,
                 'profile' => $user->profile_img ?? 'guest.jpg'
             ],
-            'partners' => $partners
+            'partners' => $partners,
+            'projects' => $projects,
         ]);
     }
 
@@ -46,7 +51,16 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->guard('api')->user();
+        $receiver = User::where('username', $request['receiver_username'])->pluck('id');
+        $project = Project::where('slug', $request['project_slug'])->pluck('id');
+        $request['receiver_id'] = $receiver[0];
+        $request['project_id'] = $project[0];
+        $request['sender_id'] = $user->id;
+        $request['status'] = 'pending';
+//        return redirect()->route('dashboard');
+        \App\Models\Request::create($request->all());
+        return redirect()->back();
     }
 
     /**
@@ -105,6 +119,34 @@ class RequestController extends Controller
         return redirect()->to(route('request.index'))->with('success', [
             "message" => "You're now have a partner with",
             'username' => $username,
+        ]);
+    }
+
+    function responseInviteProject(Request $request, string $slug)
+    {
+        $user = auth()->guard('api')->user();
+        $project = Project::where('slug', $slug)->first();
+
+        $req = \App\Models\Request::where('project_id', $project->id)->where('receiver_id', $user->id)->first();
+
+        if ($req) {
+            $req->status = 'accept';
+            $req->save();
+
+            $request['project_id'] = $project->id;
+            $request['user_id'] = auth()->guard('api')->user()->id;
+            $request['role'] = "master";
+
+            ProjectMember::create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+                'role' => 'member'
+            ]);
+        }
+
+        return redirect()->back()->with('success', [
+            "message" => "You're has been joined to",
+            'username' => $project->name,
         ]);
     }
 }

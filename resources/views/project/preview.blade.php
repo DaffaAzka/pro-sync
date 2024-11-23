@@ -54,9 +54,11 @@
                                 </div>
 
 
-                                <button data-modal-target="invite-modal" data-modal-toggle="invite-modal" class="mt-3 block text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800" type="button">
-                                    Invite Partner
-                                </button>
+                                @if($user['role'] == 'master')
+                                    <button data-modal-target="invite-modal" data-modal-toggle="invite-modal" class="mt-3 block text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800" type="button">
+                                        Invite Partner
+                                    </button>
+                                @endif
                             </div>
                         </div>
 
@@ -65,9 +67,7 @@
 
                 </div>
 
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
-                </div>
+                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab"></div>
             </div>
         </div>
 
@@ -131,17 +131,17 @@
                                         <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center gap-3 md:gap-6">
                                                 <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/guest.jpg')}}" alt="member picture">
-                                                <h3 class="text-base md:text-lg font-normal">{{ "@" . $partner->username }}</h3>
+                                                <h3 class="text-base md:text-lg font-normal text-ellipsis overflow-hidden">{{ "@" . $partner->username }}</h3>
 {{--                                                <h3 class="text-base md:text-lg font-normal">Destrivers</h3>--}}
                                                 <div class="ml-auto">
-                                                    <form action="#" method="get">
+                                                    <form action="{{ route('send.project.request') }}" method="POST">
                                                         @csrf
-                                                        <input type="hidden" name="partner-id" value="">
-                                                        <button type="button" class="invite-button focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+                                                        <input type="hidden" name="receiver_username" value="{{$partner->username}}">
+                                                        <input type="hidden" name="project_slug" value="{{ $project['slug'] }}">
+                                                        <button type="submit" class="invite-button focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
                                                             Invite
                                                         </button>
                                                     </form>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -159,7 +159,6 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
 
-                // Get elements
                 const clipboardButton = document.querySelector('[data-copy-to-clipboard-target]');
                 const tooltip = FlowbiteInstances.getInstance('Tooltip', 'tooltip-copy-invitation-code-copy-button');
                 const $defaultIcon = document.getElementById('default-icon');
@@ -167,19 +166,26 @@
                 const $defaultTooltipMessage = document.getElementById('default-tooltip-message');
                 const $successTooltipMessage = document.getElementById('success-tooltip-message');
 
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.invite-button').forEach(function (button) {
-                        button.addEventListener('click', function () {
-                            console.log('masuk');
-                            this.disabled = true; this.textContent = 'Invited';
-                            this.classList.remove('bg-purple-700', 'hover:bg-purple-800', 'dark:bg-purple-600', 'dark:hover:bg-purple-700');
-                            this.classList.add('bg-gray-500', 'dark:bg-gray-400'); t
-                            this.closest('form').submit();
-                        });
-                    });
-                });
+                // const getSubmit = document.querySelectorAll('.invite-button');
+                // getSubmit.forEach(el => el.addEventListener('click', async event => {
+                //     el.disabled = true;
+                //     el.textContent = 'Invited';
+                //     el.classList.remove('bg-purple-700', 'hover:bg-purple-800', 'dark:bg-purple-600', 'dark:hover:bg-purple-700');
+                //     el.classList.add('bg-gray-500', 'dark:bg-gray-400');
+                //
+                //     const form = el.closest('form');
+                //
+                //     try {
+                //         const response = await fetch(form.action, {
+                //             method: form.method,
+                //             body: new FormData(form),
+                //             headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
+                //         });
+                //     } catch (e) {
+                //     }
+                //
+                // }));
 
-                // Event listener for clipboard button click
                 clipboardButton.addEventListener('click', () => {
                     const input = document.getElementById(clipboardButton.getAttribute('data-copy-to-clipboard-target'));
                     input.select();
