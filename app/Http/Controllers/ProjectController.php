@@ -15,7 +15,6 @@ class ProjectController extends Controller
      */
     public function index()
     {
-//        dd('index');
         $user = auth()->guard('api')->user();
 
 //        Cari project yang memiliki projectMembers terkait dengan pengguna tertentu, setelah itu gabungkan
