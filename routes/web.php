@@ -14,6 +14,7 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
 
 //  Project
     Route::get('project/{id}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
+    Route::get('projects', [\App\Http\Controllers\ProjectController::class, 'index'])->name('lists.project');
     Route::post('project', [\App\Http\Controllers\ProjectController::class, 'store'])->name('store.project');
 
 //  Partners

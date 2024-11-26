@@ -15,7 +15,28 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+//        dd('index');
+        $user = auth()->guard('api')->user();
+
+//        Cari project yang memiliki projectMembers terkait dengan pengguna tertentu, setelah itu gabungkan
+//        dengan role yang ada table ProjectMembers
+        $projects = Project::whereHas('projectMembers', function ($query) use ($user) {
+            $query->where('user_id', $user->id);})
+            ->join('project_members', function ($join) use ($user) {
+                $join->on('projects.id', '=', 'project_members.project_id')
+                    ->where('user_id', $user->id);
+            })->select('projects.*', 'project_members.role')->get();
+
+
+//        dd($projects);
+        return view('project.lists', [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile' => $user->profile_img ?? 'guest.jpg'
+            ],
+            'projects' => $projects,
+        ]);
     }
 
     /**

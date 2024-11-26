@@ -116,7 +116,7 @@ class RequestController extends Controller
             ]);
         }
 
-        return redirect()->to(route('request.index'))->with('success', [
+        return redirect()->back()->with('success', [
             "message" => "You're now have a partner with",
             'username' => $username,
         ]);
