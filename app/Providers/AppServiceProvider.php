@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
+use Nette\Utils\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
 
         // Passport::enablePasswordGrant();
+        Model::preventLazyLoading();
+        \Illuminate\Pagination\Paginator::useTailwind();
     }
 }
