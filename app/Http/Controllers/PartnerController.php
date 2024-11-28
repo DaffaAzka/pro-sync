@@ -36,7 +36,7 @@ class PartnerController extends Controller
         $user =  auth()->guard('api')->user();
 
 //        $dump = User::select('username')->get();
-//        dd($dump);
+//        dd($this->getMyPartners());
 
         return view('partners.lists', [
             'user' => [
@@ -51,9 +51,9 @@ class PartnerController extends Controller
                 'pending' => false,
 
             ],
-            'partners' => $this->getMyPartners(),
+            'partners' => $this->getMyPartners($request),
             'connects' => [],
-            'pending' => $this->userRequest($user->id),
+            'pending' => $this->userRequest($request, $user->id),
         ]);
     }
 
@@ -61,14 +61,15 @@ class PartnerController extends Controller
     {
         $user =  auth()->guard('api')->user();
 
-        if ($request['usage'] == 'connect') {
+        if ($request['type'] == 'connect') {
             /**
              * Note: Carikan saya data user berdasarkan inputan yang mirip dengan username lalu ambil id nya dan
              *       seleksi berdasarkan yang tidak memiliki hubungan dengan id saya lalu ambil datanya
              */
             $usersToConnect = User::where('username', 'like', '%' . $request['username'] . '%')
+                ->where('username', '!=', $user->username)
                 ->whereNotIn('id', Partner::where('user_id', $user->id)->pluck('partner_id')->toArray())
-                ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
+                ->select('id', 'name', 'username', 'profile_img')->latest()->paginate(4)->withQueryString();
 
             $page = [
                 'partners' => false,
@@ -76,13 +77,13 @@ class PartnerController extends Controller
                 'pending' => false,
             ];
 
-            $partner = $this->getMyPartners();
+            $partners = $this->getMyPartners($request);
         } else {
 //            dd($request['username']);
-            $partner = User::where('username', 'like', '%' . $request['username'] . '%')
+            $partners = User::where('username', 'like', '%' . $request['username'] . '%')
                 ->whereIn('id', Partner::where('user_id', $user->id)->pluck('partner_id')->toArray())
 //                ->whereIn('id', Partner::where('user_id', $user->id)->select('partner_id')->get())
-                ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
+                ->select('id', 'name', 'username', 'profile_img')->latest()->paginate(4)->withQueryString();
             $page = [
                 'partners' => true,
                 'connect' => false,
@@ -90,6 +91,8 @@ class PartnerController extends Controller
             ];
             $usersToConnect = [];
         }
+
+//        dd($partner);
 
         return view('partners.lists', [
             'user' => [
@@ -99,25 +102,28 @@ class PartnerController extends Controller
                 'profile' => $user->profile_img ?? 'guest.jpg'
             ],
             'page' => $page,
-            'partners' => $partner,
+            'partners' => $partners,
             'connects' => $usersToConnect,
-            'pending' => $this->userRequest($user->id),
+            'pending' => $this->userRequest($request, $user->id),
         ]);
     }
 
-    function userRequest(int $id) {
+    function userRequest(Request $request, int $id) {
         /**
          * Note: Carikan saya data user yang memiliki user_id yang sama dengan saya didalam table Partner dan ambil (pluck)
          *       user berdasarkan partner_id
          */
-        return User::whereIn('id', Partner::where('user_id', $id)->where('status', 'pending')->pluck('partner_id'))
-                    ->get() ->makeHidden(['password', 'created_at', 'updated_at']);
+
+        return User::whereIn('id', Partner::where('user_id', $id)->where('status', 'pending')
+            ->orderBy('created_at', 'desc')->pluck('partner_id'))
+            ->select('id', 'name', 'username', 'profile_img')
+            ->latest()->paginate(4)->withQueryString();
     }
 
-    function getMyPartners()
+    function getMyPartners(Request $request)
     {
         $user =  auth()->guard('api')->user();
-        return $user->partners()->wherePivot('status', "partner")->get();
+        return $user->partners()->wherePivot('status', "partner")->latest()->paginate(4)->withQueryString();
     }
 
     function destroy($id)
