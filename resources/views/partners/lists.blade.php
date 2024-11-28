@@ -5,7 +5,7 @@
         <x-slot name="email">{{ $user['email'] }}</x-slot>
         <x-slot name="profile">{{ $user['profile'] }}</x-slot>
 
-        <div class="max-w h-[86vh] overflow-y-hidden p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div class="max-w md:h-[86vh] p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
             <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
@@ -57,7 +57,7 @@
                         </form>
                     </div>
 
-                    <div class="max-w max-h-[60vh] p-4">
+                    <div class="max-w md:max-h-[60vh] p-4">
 
                         <div class="grid gap-4">
 
@@ -66,7 +66,7 @@
                                 <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                     <div class="flex items-center gap-3 md:gap-6">
                                         <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/guest.jpg')}}" alt="member picture">
-                                        <h3 class="text-base md:text-lg font-normal">{{ $partner->username }}</h3>
+                                        <h3 class="text-base md:text-lg font-normal truncate">{{ "@" . $partner->username }}</h3>
                                         <div class="ml-auto">
 
                                             <button id="dropdownMenuIcon-search-{{ $partner->username }}" data-dropdown-toggle="dropdownDots-search-{{ $partner->username }}" class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none dark:focus:ring-blue-800" type="button">
@@ -122,7 +122,7 @@
                         </form>
                     </div>
 
-                    <div class="max-w max-h-[60vh] p-4">
+                    <div class="max-w md:max-h-[60vh] p-4">
 
                         <div class="grid gap-4">
 
@@ -130,7 +130,7 @@
                                 <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                     <div class="flex items-center gap-3 md:gap-6">
                                         <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/' . ($partner->profile_img ?? 'guest.jpg'))}}" alt="member picture">
-                                        <h3 class="text-base md:text-lg font-normal">@<?= $partner->username ?></h3>
+                                        <h3 class="text-base md:text-lg font-normal truncate">@<?= $partner->username ?></h3>
                                         <div class="ml-auto">
 
                                             <button id="dropdownMenuIcon-connect-{{ $partner->username }}" data-dropdown-toggle="dropdownDots-connect-{{ $partner->username }}" class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none dark:focus:ring-blue-800" type="button">
@@ -170,7 +170,7 @@
 
                 <div class="hidden rounded-lg" id="pending-partner" role="tabpanel" aria-labelledby="pending-partner-tab">
 
-                    <div class="max-w max-h-[68vh] p-4">
+                    <div class="max-w md:max-h-[68vh] p-4">
 
                         <div class="grid gap-4">
 
@@ -178,7 +178,7 @@
                                 <div class="max-w p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                                     <div class="flex items-center gap-3 md:gap-6">
                                         <img class="w-8 h-8 md:w-10 md:h-10 border-2 border-white rounded-full dark:border-gray-800" src="{{ asset('storage/profile/guest.jpg')}}" alt="member picture">
-                                        <h3 class="text-base md:text-lg font-normal">@<?= $partner->username ?></h3>
+                                        <h3 class="text-base md:text-lg font-normal truncate">@<?= $partner->username ?></h3>
                                         <div class="ml-auto">
 
                                             <button id="dropdownMenuIcon-pending-{{ $partner->username }}" data-dropdown-toggle="dropdownDots-pending-{{ $partner->username }}" class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none dark:focus:ring-blue-800" type="button">
