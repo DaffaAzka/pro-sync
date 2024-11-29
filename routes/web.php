@@ -18,7 +18,6 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::post('project', [\App\Http\Controllers\ProjectController::class, 'store'])->name('store.project');
 
 //  Partners
-    Route::get('find-partners', [\App\Http\Controllers\PartnerController::class, 'findUser'])->name('find.partners');
     Route::get('add-partners/{username}', [\App\Http\Controllers\PartnerController::class, 'store'])->name('store.partner');
 
 //  Request
