@@ -21,7 +21,7 @@
             <div id="default-tab-content">
                 <div class="hidden rounded-lg" id="projects" role="tabpanel" aria-labelledby="projects-tab">
                     <div class="max-w p-4">
-                        <form class="w-full mx-auto" method="post" action="{{ route('find.partners') }}">
+                        <form class="w-full mx-auto" method="get" action="">
                             @csrf
                             <input type="hidden" name="usage" value="connect">
                             <div class="flex">

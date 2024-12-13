@@ -68,9 +68,17 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit()
     {
-        //
+        $user = auth()->guard('api')->user();
+
+        return view('settings', [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile' => $user->profile_img ?? 'guest.jpg'
+            ],
+        ]);
     }
 
     /**

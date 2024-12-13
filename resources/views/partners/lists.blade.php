@@ -95,7 +95,7 @@
                             @endforeach
 
                             <div class="my-4 md:mx-4">
-                                {{ $partners->links() }}
+                                {{ $partners->appends(request()->query())->links() }}
                             </div>
                         </div>
 
@@ -157,7 +157,7 @@
 
                           @if($connects)
                             <div class="my-4 md:mx-4">
-                                {{ $connects->links() }}
+                                {{ $connects->appends(request()->query())->links() }}
                             </div>
                           @endif
 
@@ -205,7 +205,7 @@
                               @endforeach
 
                                 <div class="my-4 md:mx-4">
-                                    {{ $pending->links() }}
+                                    {{ $pending->appends(request()->query())->links() }}
                                 </div>
 
                         </div>

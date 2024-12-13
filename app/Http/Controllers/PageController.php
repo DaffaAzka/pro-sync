@@ -17,22 +17,6 @@ class PageController extends Controller
     {
         $user =  auth()->guard('api')->user();
 
-//        $project_member = ProjectMember::where('user_id', '=', $user->id)->get();
-//        $project = null;
-//
-//        if ($project_member) {
-//            for ($i = 0; $i < $project_member->count(); $i++) {
-//                $project_temp = Project::findOrFail($project_member[$i]->project_id);
-//                if ($i == 0) {
-//                    $project = $project_temp;
-//                } else {
-//                    if ($project->end_date < $project_temp->end_date) {
-//                        $project = $project_temp;
-//                    }
-//                }
-//            }
-//        }
-
         /**
          *
          * Note: Carikan saya data di dalam tabel projects yang memiliki relasi dengan table
