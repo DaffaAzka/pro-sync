@@ -11,7 +11,7 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('logout', [\App\Http\Controllers\AuthController::class, 'revokeToken'])->name('logout');
     Route::get('partners', [\App\Http\Controllers\PartnerController::class, 'show'])->name('partners.show');
     Route::get('request', [\App\Http\Controllers\RequestController::class, 'index'])->name('request.index');
-    Route::get('settings', [\App\Http\Controllers\UserController::class, 'edit'])->name('setinggs.index');
+    Route::get('settings', [\App\Http\Controllers\UserController::class, 'edit'])->name('settings');
 
 //  Project
     Route::get('project/{id}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);

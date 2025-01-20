@@ -19,10 +19,9 @@ class ProjectController extends Controller
 
         if ($request['title']) {
             $projects = Project::whereHas('projectMembers', function ($query) use ($user) {
-                $query->where('user_id', $user->id);})
-                ->join('project_members', function ($join) use ($user) {
-                    $join->on('projects.id', '=', 'project_members.project_id')
-                        ->where('user_id', $user->id);
+                $query->where('user_id', $user->id);
+            })->join('project_members', function ($join) use ($user) {
+                    $join->on('projects.id', '=', 'project_members.project_id')->where('user_id', $user->id);
                 })->where('name', 'LIKE', '%' . $request['title'] . '%')
                 ->select('projects.*', 'project_members.role')->orderBy('projects.created_at')
                 ->latest()->paginate(6)->withQueryString();

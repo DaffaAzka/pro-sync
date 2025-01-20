@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
+use App\Models\ProjectMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Random\RandomException;
+use function Laravel\Prompts\select;
 
 class UserController extends Controller
 {
@@ -72,12 +75,30 @@ class UserController extends Controller
     {
         $user = auth()->guard('api')->user();
 
+        $projects = Project::where('status', 'Completed')->whereHas('projectMembers', function ($query) use ($user) {
+//            Mencari project berdasarkan relasi dengan projectMembers
+            $query->where('user_id', $user->id);
+        })->join('project_members', 'project_members.project_id', '=', 'projects.id')
+            ->where('project_members.user_id', $user->id)->select('projects.*', 'project_members.role')
+            ->orderBy('projects.end_date', 'asc')
+            ->limit(6)->get()->toArray();
+
+//        $members = ProjectMember::where('user_id', $user->id)->pluck('project_id');
+//        $projects = Project::whereIn('id', $members)->where('status', 'Completed')->select('name', 'id', 'start_date')->get()->toArray();
+
+
+//        dd($projects);
+//            dd($u);
         return view('settings', [
             'user' => [
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
-                'profile' => $user->profile_img ?? 'guest.jpg'
+                'profile' => $user->profile_img ?? 'guest.jpg',
+                'projects' => $user->projectMembers->count(),
+                'partners' => $user->partners->count(),
             ],
+            'projects' => $projects,
         ]);
     }
 
@@ -95,7 +116,6 @@ class UserController extends Controller
         $user = auth()->guard('api')->user();
 
         $img = $user->profile_img;
-
         if ($request->hasFile('img')) {
             if ($img) {
                 Storage::delete('profile/'.$img);
