@@ -72,8 +72,12 @@
                     @endif
 
                     @if($projects == null)
-                        <div class="md:col-span-2">
-                            <div class=""></div>
+                        <div class="md:col-span-4">
+                            <div class="flex items-center justify-center md:h-96">
+                                <div class="justify-center">
+                                    <p class="text-xl">PROJECT NOT FOUND</p>
+                                </div>
+                            </div>
                         </div>
                     @endif
 

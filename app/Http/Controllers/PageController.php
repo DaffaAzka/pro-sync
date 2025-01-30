@@ -26,7 +26,9 @@ class PageController extends Controller
 
         $project = Project::whereHas('projectMembers', function ($query) use ($user) {
             $query->where('user_id', "=", $user->id); }
-        )->where('status', '=', 'ongoing')->orderBy('end_date')->first();
+        )->where('status', '=', 'ongoing')->orderByRaw('ABS(DATEDIFF(end_date, CURDATE()))')->first();
+
+//        dd($project);
 
         $avatars = null;
 

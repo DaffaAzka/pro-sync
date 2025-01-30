@@ -37,7 +37,6 @@ class ProjectController extends Controller
                 ->latest()->paginate(6)->withQueryString();
         }
 
-
 //        dd($projects);
         return view('project.lists', [
             'user' => [

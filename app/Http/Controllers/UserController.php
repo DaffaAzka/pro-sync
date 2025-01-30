@@ -157,7 +157,12 @@ class UserController extends Controller
     function generateUsername($name): string
     {
         $nameWithoutSpaces = str_replace(' ', '', $name);
-        $randomNumber = rand(10, 99);
-        return $nameWithoutSpaces . $randomNumber;
+        do {
+            $randomNumber = rand(10, 99);
+            $res = $nameWithoutSpaces . $randomNumber;
+        } while (User::where('username', $res)->exists());
+
+        return $res;
     }
+
 }

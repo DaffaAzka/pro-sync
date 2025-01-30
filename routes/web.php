@@ -2,10 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('dashboard', [\App\Http\Controllers\PageController::class, 'dashboard'])->name('dashboard');
     Route::get('logout', [\App\Http\Controllers\AuthController::class, 'revokeToken'])->name('logout');
@@ -27,11 +23,16 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::post('send-project-request', [\App\Http\Controllers\RequestController::class, 'store'])->name('send.project.request');
 });
 
+Route::middleware(['set.bearer.token','un.auth:api'])->group(function (){
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    Route::get('login', function () {return view('login');})->name('login');
+    Route::get('register', [\App\Http\Controllers\UserController::class, 'create'])->name('register');
+    Route::post('register', [\App\Http\Controllers\UserController::class, 'store'])->name('register.store');
 
-Route::get('login', function () {return view('login');})->name('login');
-Route::get('register', [\App\Http\Controllers\UserController::class, 'create'])->name('register');
-Route::post('register', [\App\Http\Controllers\UserController::class, 'store'])->name('register.store');
+    Route::post('login', [\App\Http\Controllers\AuthController::class, 'login'])->name('verify.email');
+    Route::post('verify-code', [\App\Http\Controllers\AuthController::class, 'getTokens'])->name('verify.code');
+});
 
-Route::post('login', [\App\Http\Controllers\AuthController::class, 'login'])->name('verify.email');
-Route::post('verify-code', [\App\Http\Controllers\AuthController::class, 'getTokens'])->name('verify.code');
 

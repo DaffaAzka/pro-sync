@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'auth' => \App\Http\Middleware\Authentication::class,
+            'un.auth' => \App\Http\Middleware\UnAuthentication::class,
             'set.bearer.token' => \App\Http\Middleware\SetBearerToken::class
         ]);
     })
