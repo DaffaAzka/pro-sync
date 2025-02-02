@@ -133,7 +133,7 @@ class ProjectController extends Controller
                 'count' => $userTaskCount
             ],
             'project' => $project,
-            'chart' => $this->groupCompletedTasksByMonthAndWeek($tasks, $projectMembers),
+            'chart' => $this->groupCompletedTasksByMonthAndYear($tasks, $projectMembers),
             'members_count' => $countMembers,
             'partners' => $partners,
         ]);
@@ -175,7 +175,7 @@ class ProjectController extends Controller
         return implode('-', $chunks);
     }
 
-    function groupCompletedTasksByMonthAndWeek($tasks, $projectMembers)
+    function groupCompletedTasksByMonthAndYear($tasks, $projectMembers)
     {
         $result = [
             'user' => [],
@@ -193,34 +193,33 @@ class ProjectController extends Controller
             return $task->project_member_id != $projectMembers->id && $task->status == 'completed';
         });
 
-        // Get unique months and sort them chronologically
+        // Get unique months and years, then sort them chronologically
         $months = $tasks->map(function ($task) {
             return [
-                'name' => Carbon::parse($task->due_date)->format('F'),
+                'name' => Carbon::parse($task->due_date)->format('F Y'), // Format "February 2025"
                 'timestamp' => Carbon::parse($task->due_date)->startOfMonth()->timestamp
             ];
         })->unique('name')->sortBy('timestamp')->values();
 
-        //  Set count of all tasks
+        // Set count of all tasks
         $result['count'] = $userTasks->count() + $otherTasks->count();
 
-        // Store sorted month names
+        // Store sorted month and year names
         $result['month'] = $months->pluck('name')->toArray();
 
         // Count tasks per month for user and others
         foreach ($result['month'] as $index => $month) {
             $result['user'][$index] = $userTasks->filter(function ($task) use ($month) {
-                return Carbon::parse($task->due_date)->format('F') === $month;
+                return Carbon::parse($task->due_date)->format('F Y') === $month;
             })->count();
 
             $result['other'][$index] = $otherTasks->filter(function ($task) use ($month) {
-                return Carbon::parse($task->due_date)->format('F') === $month;
+                return Carbon::parse($task->due_date)->format('F Y') === $month;
             })->count();
         }
 
         return $result;
     }
-
 
 
 

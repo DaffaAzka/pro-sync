@@ -12,6 +12,8 @@ class ProjectMember extends Model
     //
     use HasFactory;
 
+    protected $with = ['user'];
+
     protected $fillable = [
         'project_id',
         'user_id',

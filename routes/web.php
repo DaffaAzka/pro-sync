@@ -21,6 +21,10 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('accept-partner/{username}', [\App\Http\Controllers\RequestController::class, 'responsePartners'])->name('accept.partner');
     Route::get('accept-project/{slug}', [\App\Http\Controllers\RequestController::class, 'responseInviteProject'])->name('accept.project');
     Route::post('send-project-request', [\App\Http\Controllers\RequestController::class, 'store'])->name('send.project.request');
+
+//  Tasks
+    Route::get('/{url}/tasks' , [\App\Http\Controllers\TaskController::class, 'index'])->name('lists.tasks');
+    Route::post('/{url}/tasks' , [\App\Http\Controllers\TaskController::class, 'store'])->name('store.task');
 });
 
 Route::middleware(['set.bearer.token','un.auth:api'])->group(function (){
