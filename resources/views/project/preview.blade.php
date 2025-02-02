@@ -17,12 +17,79 @@
                 </ul>
             </div>
             <div id="default-styled-tab-content">
-                <div class="hidden p-4" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="hidden p-1 md:p-2.5" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
 
-                    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-6 md:gap-4">
 
-                        <div class="col-span-1 md:col-span-4 p-4">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur, eum?</p>
+                        <div class="col-span-1 md:col-span-4 p-4 space-y-4">
+
+{{--                            Card for the task --}}
+                            <div class="md:span p-6 bg-gradient-to-r from-blue-600 to-cyan-600 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">Task Hub</h5>
+                                <p class="mb-3 font-normal text-gray-100 line-clamp-2">Welcome to your Task Hub! Manage and organize all your tasks effortlessly in one place. Stay productive and track your progress with ease.</p>
+
+                                <div class="flex justify-end items-center space-x-2">
+                                    <a href="link-to-project" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                                        Go to Tasks
+                                        <box-icon name="right-arrow-alt" class="ml-2"></box-icon>
+                                    </a>
+                                </div>
+                            </div>
+
+
+                            <div class="grid grid-cols-1 md:grid-cols-6 md:gap-4">
+
+{{--                            Chart for the task --}}
+                                <div class="col-span-1 md:col-span-3">
+                                    <div class="w-full bg-white md:border-r-2 md:border-gray-300 dark:bg-gray-800 p-4 md:p-6">
+                                        <div class="flex justify-between mb-5">
+                                            <div>
+                                                <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">{{ $chart['count'] }}</h5>
+                                                <p class="text-base font-normal text-gray-500 dark:text-gray-400">Tasks is complected</p>
+                                            </div>
+                                        </div>
+                                        <div id="tooltip-chart" class="mb-3"></div>
+                                    </div>
+                                </div>
+
+
+{{--                            Tasks overview --}}
+                                <div class="col-span-1 md:col-span-3 row-start-1 md:row-auto">
+                                    <div class="w-full bg-white dark:bg-gray-800 p-4 md:p-6 border-b-2 border-gray-300 md:border-0">
+
+                                        <div class="flex justify-between mb-5">
+                                            <div class="space-y-4">
+                                                <div class="">
+                                                    <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">Tasks Overview</h5>
+                                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">See your contribution or upcoming tasks</p>
+                                                </div>
+
+                                                <div class="block space-y-2">
+
+                                                    <div class="md:span p-4 bg-gradient-to-r from-red-600 to-red-900 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                                        <p class="text-white font-medium">{{ $user['count']['important'] }} Important Tasks</p>
+                                                    </div>
+
+                                                    <div class="md:span p-4 bg-gradient-to-r from-yellow-400 to-yellow-800 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                                        <p class="text-white font-medium">{{ $user['count']['ongoing'] }} On Going Tasks</p>
+                                                    </div>
+
+                                                    <div class="md:span p-4 bg-gradient-to-r from-green-400 to-green-800 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                                        <p class="text-white font-medium">{{ $user['count']['completed'] }} Completed Tasks</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+
                         </div>
 
                         <div class="col-span-1 md:col-span-2 p-4">
@@ -35,7 +102,7 @@
 
                                 <div class="inline-flex gap-2 items-center">
                                     <box-icon name='task' color='#6b7280'></box-icon>
-                                    <p class="text-sm font-medium text-gray-500">2 <span class="font-normal">Tasks</span></p>
+                                    <p class="text-sm font-medium text-gray-500">{{ $chart['count'] }} <span class="font-normal">Tasks</span></p>
                                 </div>
 
                                 <div class="inline-flex gap-2 items-center">
@@ -156,6 +223,8 @@
         </div>
 
 
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
+
         <script>
             document.addEventListener('DOMContentLoaded', function () {
 
@@ -216,7 +285,99 @@
                     tooltip.hide();
                 };
             });
+
+
+            // Chart javascript
+            const options = {
+                tooltip: {
+                    enabled: true,
+                    x: {
+                        show: true,
+                    },
+                    y: {
+                        show: true,
+                    },
+                },
+                grid: {
+                    show: false,
+                    strokeDashArray: 4,
+                    padding: {
+                        left: 2,
+                        right: 2,
+                        top: -26
+                    },
+                },
+                series: [
+                    {
+                        name: "You",
+                        data: @json($chart['user']),
+                        color: "#1A56DB",
+                    },
+                    {
+                        name: "Other",
+                        data: @json($chart['other']),
+                        color: "#7E3BF2",
+                    },
+                ],
+                chart: {
+                    height: "100%",
+                    maxWidth: "100%",
+                    type: "area",
+                    fontFamily: "Inter, sans-serif",
+                    dropShadow: {
+                        enabled: false,
+                    },
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                legend: {
+                    show: true
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        opacityFrom: 0.55,
+                        opacityTo: 0,
+                        shade: "#1C64F2",
+                        gradientToColors: ["#1C64F2"],
+                    },
+                },
+                dataLabels: {
+                    enabled: false,
+                },
+                stroke: {
+                    width: 6,
+                },
+                xaxis: {
+                    categories: @json($chart['month']),
+                    labels: {
+                        show: false,
+                    },
+                    axisBorder: {
+                        show: false,
+                    },
+                    axisTicks: {
+                        show: false,
+                    },
+                },
+                yaxis: {
+                    show: false,
+                    labels: {
+                        formatter: function (value) {
+                            return value + ' complected';
+                        }
+                    }
+                },
+            }
+
+            if (document.getElementById("tooltip-chart") && typeof ApexCharts !== 'undefined') {
+                const chart = new ApexCharts(document.getElementById("tooltip-chart"), options);
+                chart.render();
+            }
+
         </script>
+
 
 
     </x-navigation>

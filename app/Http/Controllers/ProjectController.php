@@ -6,6 +6,7 @@ use App\Models\Partner;
 use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\User;
+use Carbon\Carbon;  // Keep only one Carbon import
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -92,19 +93,35 @@ class ProjectController extends Controller
         $user = auth()->guard('api')->user();
 
         $project = Project::where('slug', '=', $id)->first();
-        $members = ProjectMember::where('project_id', '=', $project->id)->get();
+        $projectMembers = $project->projectMembers->first(function ($member) use ($user) {
+            return $member->user_id == $user->id;
+        });
 
-//        $partners = $user->partners()->whereNotIn('partners.partner_id',
-//            \App\Models\Request::where('project_id', '=', $project->id)->pluck('receiver_id'))->get();
+        $countMembers = ProjectMember::where('project_id', '=', $project->id)->count();
+        $tasks = $project->tasks;
+
+        $userTasks = $tasks->filter(function ($task) use ($projectMembers) {
+            return $task->project_member_id == $projectMembers->id;
+        });
+
+        $userTaskCount = [
+            'ongoing' => $userTasks->filter(function ($userTask) {
+                return $userTask->status == "ongoing";
+            })->count(),
+            'completed' => $userTasks->filter(function ($userTask) {
+                return $userTask->status == "completed";
+            })->count(),
+            'important' => $userTasks->filter(function ($userTask) {
+                return $userTask->priority == "important" && $userTask->status == "ongoing";
+            })->count(),
+        ];
 
         $excludedPartnerIds = ProjectMember::where('project_id', $project->id)->pluck('user_id')
             ->merge(\App\Models\Request::where('project_id', $project->id)->pluck('receiver_id'));
 
         $partners = $user->partners() ->whereNotIn('partners.partner_id', $excludedPartnerIds)->get();
-//        dd($partners);
 
-
-//        dd($partners);
+//        dd($this->groupCompletedTasksByMonthAndWeek($tasks, $projectMembers));
 
         return view('project.preview', [
             'user' => [
@@ -113,9 +130,11 @@ class ProjectController extends Controller
                 'profile' => $user->profile_img ?? 'guest.jpg',
                 'role' => ProjectMember::where('project_id', '=', $project->id)->where('user_id', $user->id)
                     ->pluck('role')->first(),
+                'count' => $userTaskCount
             ],
             'project' => $project,
-            'members_count' => $members->count(),
+            'chart' => $this->groupCompletedTasksByMonthAndWeek($tasks, $projectMembers),
+            'members_count' => $countMembers,
             'partners' => $partners,
         ]);
     }
@@ -155,6 +174,53 @@ class ProjectController extends Controller
         // Join the chunks with a dash
         return implode('-', $chunks);
     }
+
+    function groupCompletedTasksByMonthAndWeek($tasks, $projectMembers)
+    {
+        $result = [
+            'user' => [],
+            'other' => [],
+            'month' => [],
+            'count' => 0
+        ];
+
+        // Group tasks by user and others
+        $userTasks = $tasks->filter(function ($task) use ($projectMembers) {
+            return $task->project_member_id == $projectMembers->id && $task->status == 'completed';
+        });
+
+        $otherTasks = $tasks->filter(function ($task) use ($projectMembers) {
+            return $task->project_member_id != $projectMembers->id && $task->status == 'completed';
+        });
+
+        // Get unique months and sort them chronologically
+        $months = $tasks->map(function ($task) {
+            return [
+                'name' => Carbon::parse($task->due_date)->format('F'),
+                'timestamp' => Carbon::parse($task->due_date)->startOfMonth()->timestamp
+            ];
+        })->unique('name')->sortBy('timestamp')->values();
+
+        //  Set count of all tasks
+        $result['count'] = $userTasks->count() + $otherTasks->count();
+
+        // Store sorted month names
+        $result['month'] = $months->pluck('name')->toArray();
+
+        // Count tasks per month for user and others
+        foreach ($result['month'] as $index => $month) {
+            $result['user'][$index] = $userTasks->filter(function ($task) use ($month) {
+                return Carbon::parse($task->due_date)->format('F') === $month;
+            })->count();
+
+            $result['other'][$index] = $otherTasks->filter(function ($task) use ($month) {
+                return Carbon::parse($task->due_date)->format('F') === $month;
+            })->count();
+        }
+
+        return $result;
+    }
+
 
 
 

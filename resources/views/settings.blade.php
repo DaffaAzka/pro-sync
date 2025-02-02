@@ -36,9 +36,11 @@
                             </div>
                         </div>
                         <div class="block my-2 md:my-1">
+
                             <button class="w-full py-1.5 text-sm font-medium rounded-lg text-white shadow-md bg-gradient-to-r from-purple-500 to-indigo-600 hover:bg-gradient-to-br hover:from-purple-600 hover:to-indigo-700 hover:shadow-lg focus:bg-gradient-to-br focus:from-purple-600 focus:to-indigo-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gradient-to-br active:from-purple-700 active:to-indigo-800 active:shadow-lg transition duration-150 ease-in-out">
                                 Edit Profile
                             </button>
+
                         </div>
                     </div>
 
@@ -83,7 +85,7 @@
 
 
 
-                    {{--                    <form class="mx-auto" method="POST" action="{{route('register.store')}}">--}}
+{{--                    <form class="mx-auto" method="POST" action="{{route('register.store')}}">--}}
 {{--                        @csrf--}}
 {{--                        <div class="space-y-4">--}}
 {{--                            <div class="">--}}
