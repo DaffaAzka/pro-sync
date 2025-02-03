@@ -97,30 +97,32 @@
                             <p class="font-normal text-sm text-gray-600 line-clamp-2 md:line-clamp-3">{{ $task['description'] }}</p>
                         </div>
                         <div class="flex my-1.5 space-x-2 mt-3.5 w-full">
-                            <a href=""
+                            <a href="{{ route('show.task', ['slug' => $slug, 'id' => $task->id]) }}"
                                class="flex items-center px-4 py-1.5 text-sm font-medium rounded-lg text-white shadow-md bg-gradient-to-r from-purple-500 to-indigo-600 hover:bg-gradient-to-br hover:from-purple-600 hover:to-indigo-700 hover:shadow-lg focus:bg-gradient-to-br focus:from-purple-600 focus:to-indigo-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gradient-to-br active:from-purple-700 active:to-indigo-800 active:shadow-lg transition duration-150 ease-in-out">
-                                Go to project
+                                Go to task
                                 <box-icon name="right-arrow-alt" class="ml-2" color="#ffffff"></box-icon>
                             </a>
 
-                            <button data-popover-target="popover-{{$task['id']}}-description"
-                                    data-popover-placement="top-start" type="button">
-                                <svg class="w-6 h-6 ms-0.5 text-gray-400 hover:text-gray-500" aria-hidden="true"
-                                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                          clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="sr-only">Show details</span>
-                            </button>
-                            <div data-popover id="popover-{{$task['id']}}-description" role="tooltip"
-                                 class="absolute z-10 invisible inline-block text-sm text-white transition-opacity duration-300 bg-gray-700 border border-gray-200 rounded-lg shadow-sm opacity-0 w-auto dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                <div class="p-3 space-y-1">
-                                    <p>Assigned to: <span class="ms-1">{{ $task['assigned_to'] }}</span></p>
-                                    <p>Role: <span class="bg-indigo-100 text-indigo-800 text-xs font-medium ms-1 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300 pt-0">{{ $task['assigned_role'] }}</span>
+                            @if($user['role'] == 'master')
+                                <button data-popover-target="popover-{{$task['id']}}-description"
+                                        data-popover-placement="top-start" type="button">
+                                    <svg class="w-6 h-6 ms-0.5 text-gray-400 hover:text-gray-500" aria-hidden="true"
+                                         fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                              clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="sr-only">Show details</span>
+                                </button>
+                                <div data-popover id="popover-{{$task['id']}}-description" role="tooltip"
+                                     class="absolute z-10 invisible inline-block text-sm text-white transition-opacity duration-300 bg-gray-700 border border-gray-200 rounded-lg shadow-sm opacity-0 w-auto dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                    <div class="p-3 space-y-1">
+                                        <p>Assigned to: <span class="ms-1">{{ $task['assigned_to'] }}</span></p>
+                                        <p>Role: <span class="bg-indigo-100 text-indigo-800 text-xs font-medium ms-1 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300 pt-0">{{ $task['assigned_role'] }}</span>
+                                    </div>
+                                    <div data-popper-arrow></div>
                                 </div>
-                                <div data-popper-arrow></div>
-                            </div>
+                            @endif
 
                         </div>
                     </div>
@@ -170,7 +172,7 @@
                                     <label for="members" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Members</label>
                                     <select id="members" name="project_member_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         @foreach($members as $member)
-                                            <option value="{{ $projectMembers }}">{{ $member['name'] }}</option>
+                                            <option value="{{ $member['project_member_id'] }}">{{ $member['name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>

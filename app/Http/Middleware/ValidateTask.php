@@ -2,13 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Project;
-use App\Models\ProjectMember;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateProjectAccess
+class ValidateTask
 {
     /**
      * Handle an incoming request.
@@ -17,10 +15,6 @@ class ValidateProjectAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-       $project = Project::where('slug', '=', $request->slug)->first();
-        if (ProjectMember::where('project_id', '=', $project->id)->where('user_id', '=', auth()->guard('api')->user()->id)->exists()) {
-            return $next($request);
-        }
-        abort(404);
+        return $next($request);
     }
 }

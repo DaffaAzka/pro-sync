@@ -29,7 +29,7 @@
                             <p class="font-normal text-sm text-gray-600 line-clamp-2 md:line-clamp-3">{{ $project['description'] }}</p>
                         </div>
                         <div class="flex my-1.5 space-x-2 mt-3.5 w-full">
-                            <a href="{{ route('show.project', ['id' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium rounded-lg text-white shadow-md bg-gradient-to-r from-purple-500 to-indigo-600 hover:bg-gradient-to-br hover:from-purple-600 hover:to-indigo-700 hover:shadow-lg focus:bg-gradient-to-br focus:from-purple-600 focus:to-indigo-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gradient-to-br active:from-purple-700 active:to-indigo-800 active:shadow-lg transition duration-150 ease-in-out">
+                            <a href="{{ route('show.project', ['slug' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium rounded-lg text-white shadow-md bg-gradient-to-r from-purple-500 to-indigo-600 hover:bg-gradient-to-br hover:from-purple-600 hover:to-indigo-700 hover:shadow-lg focus:bg-gradient-to-br focus:from-purple-600 focus:to-indigo-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gradient-to-br active:from-purple-700 active:to-indigo-800 active:shadow-lg transition duration-150 ease-in-out">
                                 Go to project
                                 <box-icon name="right-arrow-alt" class="ml-2" color="#ffffff"></box-icon>
                             </a>

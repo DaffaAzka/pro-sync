@@ -10,7 +10,7 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::get('settings', [\App\Http\Controllers\UserController::class, 'edit'])->name('settings');
 
 //  Project
-    Route::get('project/{id}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
+    Route::get('project/{slug}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('show.project')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
     Route::get('projects', [\App\Http\Controllers\ProjectController::class, 'index'])->name('lists.project');
     Route::post('project', [\App\Http\Controllers\ProjectController::class, 'store'])->name('store.project');
 
@@ -23,8 +23,9 @@ Route::middleware(['set.bearer.token','auth:api'])->group(function (){
     Route::post('send-project-request', [\App\Http\Controllers\RequestController::class, 'store'])->name('send.project.request');
 
 //  Tasks
-    Route::get('/{url}/tasks' , [\App\Http\Controllers\TaskController::class, 'index'])->name('lists.tasks');
-    Route::post('/{url}/tasks' , [\App\Http\Controllers\TaskController::class, 'store'])->name('store.task');
+    Route::get('/{slug}/tasks' , [\App\Http\Controllers\TaskController::class, 'index'])->name('lists.tasks')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
+    Route::get('/{slug}/tasks/{id}' , [\App\Http\Controllers\TaskController::class, 'show'])->name('show.task')->middleware(\App\Http\Middleware\ValidateProjectAccess::class);
+    Route::post('/tasks' , [\App\Http\Controllers\TaskController::class, 'store'])->name('store.task');
 });
 
 Route::middleware(['set.bearer.token','un.auth:api'])->group(function (){

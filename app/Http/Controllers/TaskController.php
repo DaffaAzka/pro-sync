@@ -6,16 +6,17 @@ use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use function Sodium\add;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(string $url)
+    public function index(string $slug)
     {
         $user = auth()->guard('api')->user();
-        $project = Project::where('slug', $url)->first();
+        $project = Project::where('slug', $slug)->first();
         $members = null;
 
         $projectMembers = $project->projectMembers->first(function ($member) use ($user) {
@@ -40,7 +41,9 @@ class TaskController extends Controller
                 ->withQueryString();
 
             $members = $project->projectMembers->map(function ($member) {
-                return $member->user;
+                $temp = $member->user->toArray();
+                $temp['project_member_id'] = $member->id;
+                return $temp;
             })->toArray();
 
         } else {
@@ -51,8 +54,6 @@ class TaskController extends Controller
                 ->withQueryString();
 
         }
-
-//        dd($members);
 
         return view('tasks.lists', [
             'user' => [
@@ -65,7 +66,7 @@ class TaskController extends Controller
             'tasks' => $tasks,
             'members' => $members,
             'projectMembers' => $projectMembers->id,
-            'slug' => $url,
+            'slug' => $slug,
         ]);
     }
 
@@ -106,9 +107,22 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($slug, $id)
     {
-        //
+        $user = auth()->guard('api')->user();
+        $project = Project::where('slug', $slug)->first();
+        $task = Task::findOrFail($id)->toArray();
+
+        return view('tasks.preview', [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile' => $user->profile_img ?? 'guest.jpg',
+                'role' => ProjectMember::where('project_id', '=', $project->id)->where('user_id', $user->id)
+                    ->pluck('role')->first(),
+            ],
+            'task' => $task,
+        ]);
     }
 
     /**

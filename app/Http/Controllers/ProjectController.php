@@ -87,12 +87,12 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
         //
         $user = auth()->guard('api')->user();
 
-        $project = Project::where('slug', '=', $id)->first();
+        $project = Project::where('slug', '=', $slug)->first();
         $projectMembers = $project->projectMembers->first(function ($member) use ($user) {
             return $member->user_id == $user->id;
         });

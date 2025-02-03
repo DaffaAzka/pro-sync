@@ -30,7 +30,7 @@
                                     <p class="mb-3 font-normal text-gray-100 line-clamp-2">Welcome to your Task Hub! Manage and organize all your tasks effortlessly in one place. Stay productive and track your progress with ease.</p>
 
                                     <div class="flex justify-end items-center space-x-2">
-                                        <a href="{{ route('lists.tasks', ['url' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                                        <a href="{{ route('lists.tasks', ['slug' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
                                             Go to Tasks
                                             <box-icon name="right-arrow-alt" class="ml-2"></box-icon>
                                         </a>
@@ -42,7 +42,7 @@
                                     <p class="mb-3 font-normal text-gray-100 line-clamp-2">Welcome to the Task Hub, monitor and organize all tasks effortlessly in one place. See what has been completed and assign new tasks efficiently.</p>
 
                                     <div class="flex justify-end items-center space-x-2">
-                                        <a href="{{ route('lists.tasks', ['url' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                                        <a href="{{ route('lists.tasks', ['slug' => $project['slug']]) }}" class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600">
                                             Manage Tasks
                                             <box-icon name="right-arrow-alt" class="ml-2"></box-icon>
                                         </a>
